@@ -14,3 +14,12 @@ body {
 .task-card:hover {
   cursor: grab;
 }
+
+/* band-aid fix to always show draggable cards on top, but under the modal */
+.card-draggable {
+  z-index: 99
+}
+
+.drop-glow {
+  box-shadow: 0 0 50px 15px #48abe0;
+}
