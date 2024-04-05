@@ -35,7 +35,7 @@ function createTaskCard(task) {
         <div class="card card-draggable m-2 ${cardBg}" data-task-id="${task.id}">
             <div class="card-header d-flex justify-content-between align-items-center">
                 <span>${task.title}</span>
-                <button class="btn btn-danger btn-sm" id="delete-task">Delete</button>
+                <button class="btn btn-danger btn-sm" id="delete-task" data-task-id="${task.id}">Delete</button>
             </div>
             <div class="card-body">
                 <p class="card-text">${task.desc}</p>
@@ -48,8 +48,6 @@ function createTaskCard(task) {
 }
 
 function renderTodoCards() {
-    console.log('render todo cards')
-
     todoCardsEl.innerHTML = ''
     for (const currentEntry of Object.values(taskList)) {
         if (currentEntry.status === 'todo') {
@@ -97,6 +95,9 @@ function renderTaskList(lane) {
         renderDoneCards()
     }
 
+    for (const currentEntry of document.querySelectorAll('#delete-task')) {
+        currentEntry.addEventListener('click', handleDeleteTask)
+    }
     
     $('.card-draggable').draggable({
         snap: ".lane",
@@ -140,7 +141,7 @@ function handleAddTask(event){
 
 // Todo: create a function to handle deleting a task
 function handleDeleteTask(event){    
-    delete (taskList[event.target.dataset.taskId])
+    delete taskList[event.target.dataset.taskId]
     saveToLocalStorage()
     renderTaskList()
 }
@@ -149,8 +150,6 @@ function handleDeleteTask(event){
 function handleDrop(event, ui) {
     const droppedCardTaskId = ui.helper[0].dataset.taskId
     const droppedLaneStatus = event.target.dataset.laneStatus
-
-    console.log(droppedLaneStatus)
 
     taskList[droppedCardTaskId].status = droppedLaneStatus
     saveToLocalStorage()
@@ -174,10 +173,6 @@ $(document).ready(function () {
     renderTaskList()
 
     document.querySelector("#add-task-form").addEventListener('submit', handleAddTask)
-    
-    for (const currentEntry of document.querySelectorAll('#delete-task')) {
-        currentEntry.addEventListener('click', handleDeleteTask)
-    }
 
     $('.lane').droppable({
         drop: handleDrop,
